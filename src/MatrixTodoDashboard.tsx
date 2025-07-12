@@ -60,16 +60,18 @@ const MatrixTodoDashboard = () => {
     }
   });
 
-  const priorities = ['week', 'month', 'quarter'];
+  const priorities = ['week', 'month', 'quarter', 'completed'];
   const priorityLabels = {
     week: 'This Week',
     month: 'This Month',
-    quarter: 'This Quarter'
+    quarter: 'This Quarter',
+    completed: 'Completed'
   };
   const priorityColors = {
     week: 'bg-red-50 border-red-200',
     month: 'bg-yellow-50 border-yellow-200',
-    quarter: 'bg-blue-50 border-blue-200'
+    quarter: 'bg-blue-50 border-blue-200',
+    completed: 'bg-green-50 border-green-200'
   };
 
   const updateTask = (category, taskId, updates) => {
@@ -145,6 +147,15 @@ const MatrixTodoDashboard = () => {
     }
   };
 
+  const toggleTaskCompletion = (category, taskId) => {
+    const task = todos[category].items.find(item => item.id === taskId);
+    if (task) {
+      const newCompleted = !task.completed;
+      const newPriority = newCompleted ? 'completed' : task.priority;
+      updateTask(category, taskId, { completed: newCompleted, priority: newPriority });
+    }
+  };
+
   const TaskCard = ({ category, item }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(item.task);
@@ -198,7 +209,7 @@ const MatrixTodoDashboard = () => {
     };
 
     const handleDragStart = (e) => {
-      if (e.target.closest('button') || e.target.closest('input')) {
+      if (e.target.closest('button') || e.target.closest('input') || item.completed) {
         e.preventDefault();
         return;
       }
@@ -305,19 +316,19 @@ const MatrixTodoDashboard = () => {
 
     return (
       <div 
-        className={`bg-white p-2 rounded shadow-sm border hover:shadow-md transition-shadow ${item.completed ? 'opacity-50' : ''} hover:border-gray-300`}
-        draggable
+        className={`bg-white p-2 rounded shadow-sm border hover:shadow-md transition-shadow ${item.completed ? 'bg-green-50 border-green-200' : ''} hover:border-gray-300`}
+        draggable={!item.completed}
         onDragStart={handleDragStart}
       >
         <div className="flex items-start gap-1">
           <button
-            onClick={() => updateTask(category, item.id, { completed: !item.completed })}
+            onClick={() => toggleTaskCompletion(category, item.id)}
             className="mt-0.5 flex-shrink-0"
           >
             <CheckCircle className={`w-4 h-4 ${item.completed ? 'text-green-500' : 'text-gray-400'}`} />
           </button>
           <div className="flex-1 min-w-0">
-            <p className={`text-sm font-medium text-gray-800 break-words ${item.completed ? 'line-through' : ''}`}>
+            <p className={`text-sm font-medium text-gray-800 break-words ${item.completed ? 'line-through text-green-700' : ''}`}>
               {item.task}
               {item.subtasks && item.subtasks.length > 0 && (
                 <span className="ml-1 text-xs text-gray-500">
@@ -373,7 +384,9 @@ const MatrixTodoDashboard = () => {
       setIsDragOver(false);
       const taskId = parseInt(e.dataTransfer.getData('taskId'));
       const fromCategory = e.dataTransfer.getData('category');
-      moveTask(taskId, fromCategory, priority);
+      if (priority !== 'completed') {
+        moveTask(taskId, fromCategory, priority);
+      }
     };
 
     const handleDragOver = (e) => {
@@ -389,17 +402,17 @@ const MatrixTodoDashboard = () => {
 
     return (
       <div 
-        className={`min-h-[200px] p-3 border ${priorityColors[priority]} rounded-lg transition-all ${isDragOver ? 'border-2 border-blue-400 bg-blue-50' : ''}`}
+        className={`min-h-[200px] p-3 border ${priorityColors[priority]} rounded-lg transition-all ${isDragOver && priority !== 'completed' ? 'border-2 border-blue-400 bg-blue-50' : ''}`}
         onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
+        onDragOver={priority !== 'completed' ? handleDragOver : undefined}
+        onDragLeave={priority !== 'completed' ? handleDragLeave : undefined}
       >
         <div className="space-y-2">
           {tasks.map(item => (
             <TaskCard key={item.id} category={category} item={item} />
           ))}
           
-          {isAddingNewTask ? (
+          {isAddingNewTask && priority !== 'completed' ? (
             <div className="bg-white p-2 rounded shadow-sm border border-blue-400">
               <input
                 type="text"
@@ -513,13 +526,13 @@ const MatrixTodoDashboard = () => {
       completed: 0, 
       totalSubtasks: 0,
       completedSubtasks: 0,
-      byPriority: { week: 0, month: 0, quarter: 0 } 
+      byPriority: { week: 0, month: 0, quarter: 0, completed: 0 } 
     };
     Object.values(todos).forEach(category => {
       category.items.forEach(item => {
         stats.total++;
         if (item.completed) stats.completed++;
-        if (!item.completed && item.priority in stats.byPriority) {
+        if (item.priority in stats.byPriority) {
           stats.byPriority[item.priority]++;
         }
         
@@ -587,7 +600,7 @@ const MatrixTodoDashboard = () => {
         <p className="text-gray-600">Check off tasks and subtasks • Edit to modify • Drag to reprioritize • Capture ideas below</p>
       </div>
 
-      <div className="grid grid-cols-7 gap-4 mb-6">
+      <div className="grid grid-cols-8 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <p className="text-sm text-gray-600">Total Tasks</p>
           <p className="text-2xl font-bold">{stats.total}</p>
@@ -615,26 +628,30 @@ const MatrixTodoDashboard = () => {
           <p className="text-2xl font-bold text-blue-500">{stats.byPriority.quarter}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600">Completed</p>
+          <p className="text-2xl font-bold text-green-600">{stats.byPriority.completed || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
           <p className="text-sm text-gray-600">Ideas</p>
           <p className="text-2xl font-bold text-orange-500">{ideas.length}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           <div className="p-4 bg-gray-100 font-semibold">Category</div>
           {priorities.map(priority => (
             <div key={priority} className={`p-4 text-center font-semibold ${priorityColors[priority]}`}>
               <div className="text-lg">{priorityLabels[priority]}</div>
-              <div className={`text-sm ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : 'text-blue-600'}`}>
-                {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : 'Strategic'}
+              <div className={`text-sm ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : priority === 'quarter' ? 'text-blue-600' : 'text-green-600'}`}>
+                {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : priority === 'quarter' ? 'Strategic' : 'Done'}
               </div>
             </div>
           ))}
         </div>
 
         {Object.entries(todos).map(([category, data]) => (
-          <div key={category} className="grid grid-cols-4 border-t">
+          <div key={category} className="grid grid-cols-5 border-t">
             <div className={`p-4 ${data.color} text-white flex items-center gap-2`}>
               {data.icon}
               <span className="font-semibold capitalize">{category}</span>
