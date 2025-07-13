@@ -1,0 +1,114 @@
+{
+  "todos": {
+    "venture": {
+      "icon": "💼",
+      "color": "bg-blue-600",
+      "items": [
+        {
+          "id": 7,
+          "task": "d",
+          "priority": "future",
+          "completed": false,
+          "status": "green"
+        }
+      ]
+    },
+    "finance": {
+      "icon": "💰",
+      "color": "bg-green-600",
+      "items": [
+        {
+          "id": 2,
+          "task": "Review investment portfolio",
+          "priority": "month",
+          "completed": false,
+          "status": "not-started",
+          "subtasks": []
+        },
+        {
+          "id": 6,
+          "task": "ddd",
+          "priority": "week",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 8,
+          "task": "dd",
+          "priority": "quarter",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 9,
+          "task": "cc",
+          "priority": "future",
+          "completed": false,
+          "status": "green"
+        }
+      ]
+    },
+    "personal": {
+      "icon": "👤",
+      "color": "bg-purple-600",
+      "items": [
+        {
+          "id": 3,
+          "task": "Plan weekend activities",
+          "priority": "week",
+          "completed": false,
+          "status": "not-started",
+          "subtasks": []
+        },
+        {
+          "id": 10,
+          "task": "ccd",
+          "priority": "future",
+          "completed": false,
+          "status": "green"
+        }
+      ]
+    }
+  },
+  "ideas": [
+    {
+      "id": 1,
+      "text": "Create a productivity app",
+      "timestamp": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "categoryLinks": {
+    "venture": [
+      {
+        "id": 1,
+        "title": "Portfolio Strategy",
+        "url": "https://docs.google.com/spreadsheets/d/example",
+        "type": "sheets"
+      },
+      {
+        "id": 2,
+        "title": "Investment Thesis",
+        "url": "https://docs.google.com/presentation/d/example",
+        "type": "slides"
+      }
+    ],
+    "finance": [
+      {
+        "id": 1,
+        "title": "Expense Tracking",
+        "url": "https://docs.google.com/spreadsheets/d/example",
+        "type": "sheets"
+      }
+    ],
+    "personal": [
+      {
+        "id": 1,
+        "title": "Goals & Vision",
+        "url": "https://docs.google.com/document/d/example",
+        "type": "docs"
+      }
+    ]
+  },
+  "chatMessages": [],
+  "lastSaved": "2025-07-13T03:06:24.148Z"
+}

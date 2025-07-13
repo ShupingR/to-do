@@ -1,6 +1,6 @@
 # Matrix Todo Dashboard
 
-A modern, interactive todo application with drag-and-drop functionality, subtasks, and an ideas capture system.
+A modern, interactive todo application with drag-and-drop functionality, subtasks, ideas capture system, and AI-powered productivity assistant.
 
 ## Features
 
@@ -10,6 +10,7 @@ A modern, interactive todo application with drag-and-drop functionality, subtask
 - Subtasks support
 - Ideas capture and conversion to tasks
 - Real-time statistics
+- **AI-Powered Productivity Assistant** - Claude-powered chatbot for task organization, priority assessment, and productivity guidance
 
 ## Getting Started
 
@@ -18,12 +19,20 @@ A modern, interactive todo application with drag-and-drop functionality, subtask
 npm install
 ```
 
-2. Run development server:
+2. Set up Claude API (for AI assistant):
+   - Get an API key from [Anthropic](https://console.anthropic.com/)
+   - Create a `.env.local` file in the root directory:
+   ```
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   ```
+   - For production deployment on Vercel, add the environment variable in your Vercel project settings
+
+3. Run development server:
 ```bash
 npm run dev
 ```
 
-3. Build for production:
+4. Build for production:
 ```bash
 npm run build
 ```
@@ -33,7 +42,10 @@ npm run build
 ### Vercel (Recommended)
 1. Push your code to GitHub
 2. Import project on [Vercel](https://vercel.com)
-3. Deploy with zero configuration
+3. Add environment variable in Vercel project settings:
+   - Go to Project Settings → Environment Variables
+   - Add `ANTHROPIC_API_KEY` with your Claude API key
+4. Deploy with zero configuration
 
 ### Netlify
 1. Push code to GitHub
@@ -47,3 +59,21 @@ npm run build
 
 ### Static Hosting
 After running `npm run build`, upload the `dist` folder to any static hosting service.
+
+## AI Assistant Features
+
+The productivity assistant powered by Claude can help you with:
+
+- **Task Organization**: Convert thoughts into actionable tasks with proper categories
+- **Priority Assessment**: Get suggestions on what to focus on based on your current workload
+- **Progress Review**: Celebrate wins and identify areas for improvement
+- **Stuck? Get Help**: Receive suggestions when you're feeling blocked or overwhelmed
+- **Strategic Planning**: Help with long-term planning and goal setting
+- **Brain Dump Processing**: Organize scattered thoughts into structured tasks and ideas
+
+### Example Prompts
+- "Help me organize my thoughts"
+- "What should I focus on this week?"
+- "I'm stuck on [specific task], any suggestions?"
+- "Review my progress and suggest next steps"
+- "Help me break down [big task] into smaller pieces"

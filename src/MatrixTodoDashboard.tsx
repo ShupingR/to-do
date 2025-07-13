@@ -1,27 +1,120 @@
-import React, { useState } from 'react';
-import { Briefcase, DollarSign, User, CheckCircle, X, Edit2, Plus, Trash2, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Briefcase, DollarSign, User, CheckCircle, X, Edit2, Plus, Trash2, Lightbulb, ChevronDown, ChevronUp, MessageCircle, Send, Bot, User as UserIcon, Link, ExternalLink } from 'lucide-react';
 
 const MatrixTodoDashboard = () => {
   const [editingTask, setEditingTask] = useState(null);
-  const [newTask, setNewTask] = useState({ category: null, priority: null, text: '', subtasks: [] });
-  const [newSubtaskInput, setNewSubtaskInput] = useState('');
+  const [editingSubtask, setEditingSubtask] = useState(null);
   const [ideas, setIdeas] = useState([
     { id: 1001, text: 'Explore AI-powered due diligence automation', timestamp: new Date().toISOString() },
     { id: 1002, text: 'Research Web3 investment opportunities', timestamp: new Date().toISOString() }
   ]);
-  const [newIdea, setNewIdea] = useState('');
   const [ideasExpanded, setIdeasExpanded] = useState(true);
   const [editingIdea, setEditingIdea] = useState(null);
+  const [isAddingNewIdea, setIsAddingNewIdea] = useState(false);
+  
+  // Category editing state
+  const [editingCategory, setEditingCategory] = useState(null);
+  
+  // Links state
+  const [categoryLinks, setCategoryLinks] = useState({
+    venture: [
+      { id: 1, title: 'Portfolio Strategy', url: 'https://docs.google.com/spreadsheets/d/example', type: 'sheets' },
+      { id: 2, title: 'Investment Thesis', url: 'https://docs.google.com/presentation/d/example', type: 'slides' }
+    ],
+    finance: [
+      { id: 1, title: 'Expense Tracking', url: 'https://docs.google.com/spreadsheets/d/example', type: 'sheets' }
+    ],
+    personal: [
+      { id: 1, title: 'Goals & Vision', url: 'https://docs.google.com/document/d/example', type: 'docs' }
+    ]
+  });
+  const [expandedLinks, setExpandedLinks] = useState({});
+  const [editingLink, setEditingLink] = useState(null);
+  
+  // Chatbot state
+  const [chatbotExpanded, setChatbotExpanded] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: 1,
+      type: 'assistant',
+      content: "Hi! I'm your productivity assistant. I can help you:\n\n• Organize your thoughts into tasks and ideas\n• Assess priorities and categorize work\n• Review your progress and completed items\n• Provide suggestions when you're stuck\n• Help with braindumps and planning\n\nWhat would you like to work on today?",
+      timestamp: new Date().toISOString()
+    }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  
+  // Ref for chat messages container
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
 
-  const [todos, setTodos] = useState({
-    business: {
+  // Auto-scroll to bottom when new messages are added or loading state changes
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [chatMessages, isChatLoading]);
+
+  // Load data from file on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch('/api/data');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.todos) setTodos(data.todos);
+          if (data.ideas) setIdeas(data.ideas);
+          if (data.categoryLinks) setCategoryLinks(data.categoryLinks);
+          if (data.chatMessages) setChatMessages(data.chatMessages);
+          console.log('Data loaded successfully');
+        } else {
+          console.error('Failed to load data');
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Save data to file whenever state changes
+  const saveData = async () => {
+    try {
+      const dataToSave = {
+        todos,
+        ideas,
+        categoryLinks,
+        chatMessages
+      };
+
+      const response = await fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSave),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Data saved successfully:', result.lastSaved);
+      } else {
+        console.error('Failed to save data');
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+    const [todos, setTodos] = useState({
+    venture: {
       icon: <Briefcase className="w-5 h-5" />,
-      color: 'bg-blue-500',
+      color: 'bg-blue-600',
       items: [
-        { id: 1, task: 'Portfolio management tool development', priority: 'week', completed: false, 
+        { id: 1, task: 'Portfolio management tool development', priority: 'week', completed: false, status: 'green', 
           subtasks: [
-            { id: 101, text: 'Letter to founders', completed: false },
-            { id: 102, text: 'Competitive landscape analysis', completed: false }
+            { id: 101, text: 'Letter to founders', completed: false, status: 'green' },
+            { id: 102, text: 'Competitive landscape analysis', completed: false, status: 'yellow' }
           ]
         },
         { id: 2, task: 'Nvidia partnership management', priority: 'week', completed: false },
@@ -31,46 +124,63 @@ const MatrixTodoDashboard = () => {
           ]
         },
         { id: 4, task: 'Build AI tools for VC firms (Your Company)', priority: 'month', completed: false },
-        { id: 5, task: 'Establish your own VC firm', priority: 'quarter', completed: false },
+        { id: 5, task: 'Establish your own VC firm', priority: 'future', completed: false },
         { id: 6, task: 'Fundraising pitch practice', priority: 'month', completed: false },
         { id: 7, task: 'Regional expansion research', priority: 'quarter', completed: false },
         { id: 8, task: 'Hyperscaler partnerships', priority: 'quarter', completed: false },
         { id: 9, task: 'Connect with later-stage VCs', priority: 'quarter', completed: false },
-        { id: 10, task: 'I-40 capital understanding', priority: 'quarter', completed: false }
+        { id: 10, task: 'I-40 capital understanding', priority: 'quarter', completed: false },
+        { id: 18, task: 'Build a billion-dollar portfolio company', priority: 'future', completed: false },
+        { id: 19, task: 'Launch international VC fund', priority: 'future', completed: false }
       ]
     },
     finance: {
       icon: <DollarSign className="w-5 h-5" />,
-      color: 'bg-green-500',
+      color: 'bg-green-600',
       items: [
         { id: 11, task: 'Ramp demo for expense management', priority: 'week', completed: false },
         { id: 12, task: 'Trim concentrated stock positions', priority: 'month', completed: false },
         { id: 13, task: 'Tax strategy planning', priority: 'month', completed: false },
         { id: 14, task: 'Business expense organization', priority: 'month', completed: false },
-        { id: 15, task: 'Research new investment opportunities', priority: 'quarter', completed: false }
+        { id: 15, task: 'Research new investment opportunities', priority: 'quarter', completed: false },
+        { id: 20, task: 'Achieve financial independence', priority: 'future', completed: false },
+        { id: 21, task: 'Build generational wealth portfolio', priority: 'future', completed: false }
       ]
     },
     personal: {
       icon: <User className="w-5 h-5" />,
-      color: 'bg-purple-500',
+      color: 'bg-purple-600',
       items: [
         { id: 16, task: 'China visa application', priority: 'week', completed: false },
-        { id: 17, task: 'Establish health & wellness routine', priority: 'month', completed: false }
+        { id: 17, task: 'Establish health & wellness routine', priority: 'month', completed: false },
+        { id: 22, task: 'Learn Mandarin fluently', priority: 'future', completed: false },
+        { id: 23, task: 'Achieve work-life balance mastery', priority: 'future', completed: false }
       ]
     }
   });
 
-  const priorities = ['week', 'month', 'quarter', 'completed'];
+  // Auto-save on state changes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      saveData();
+    }, 1000); // Save after 1 second of no changes
+
+    return () => clearTimeout(timeoutId);
+  }, [todos, ideas, categoryLinks, chatMessages]);
+
+  const priorities = ['week', 'month', 'quarter', 'future', 'completed'];
   const priorityLabels = {
     week: 'This Week',
     month: 'This Month',
     quarter: 'This Quarter',
+    future: 'Future',
     completed: 'Completed'
   };
   const priorityColors = {
     week: 'bg-red-50 border-red-200',
     month: 'bg-yellow-50 border-yellow-200',
     quarter: 'bg-blue-50 border-blue-200',
+    future: 'bg-purple-50 border-purple-200',
     completed: 'bg-green-50 border-green-200'
   };
 
@@ -86,7 +196,7 @@ const MatrixTodoDashboard = () => {
     }));
   };
 
-  const updateSubtask = (category, taskId, subtaskId, completed) => {
+  const updateSubtask = (category, taskId, subtaskId, completed, status = null) => {
     setTodos(prev => ({
       ...prev,
       [category]: {
@@ -96,7 +206,34 @@ const MatrixTodoDashboard = () => {
             return {
               ...item,
               subtasks: item.subtasks.map(subtask =>
-                subtask.id === subtaskId ? { ...subtask, completed } : subtask
+                subtask.id === subtaskId ? { 
+                  ...subtask, 
+                  completed,
+                  ...(status && { status })
+                } : subtask
+              )
+            };
+          }
+          return item;
+        })
+      }
+    }));
+  };
+
+  const updateSubtaskText = (category, taskId, subtaskId, newText) => {
+    setTodos(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        items: prev[category].items.map(item => {
+          if (item.id === taskId && item.subtasks) {
+            return {
+              ...item,
+              subtasks: item.subtasks.map(subtask =>
+                subtask.id === subtaskId ? { 
+                  ...subtask, 
+                  text: newText
+                } : subtask
               )
             };
           }
@@ -116,29 +253,69 @@ const MatrixTodoDashboard = () => {
     }));
   };
 
-  const addTask = () => {
-    if (!newTask.text.trim() || !newTask.category || !newTask.priority) return;
-    
-    const maxId = Math.max(0, ...Object.values(todos).flatMap(cat => cat.items.map(item => item.id)));
-    const newId = maxId + 1;
-    
-    setTodos(prev => ({
-      ...prev,
-      [newTask.category]: {
-        ...prev[newTask.category],
-        items: [...prev[newTask.category].items, {
-          id: newId,
-          task: newTask.text,
-          priority: newTask.priority,
-          completed: false,
-          subtasks: newTask.subtasks.length > 0 ? newTask.subtasks : undefined
-        }]
-      }
-    }));
-    
-    setNewTask({ category: null, priority: null, text: '', subtasks: [] });
-    setNewSubtaskInput('');
+  const updateCategoryName = (oldCategory, newCategory) => {
+    if (newCategory.trim() && newCategory !== oldCategory) {
+      setTodos(prev => {
+        const newTodos = { ...prev };
+        newTodos[newCategory] = newTodos[oldCategory];
+        delete newTodos[oldCategory];
+        return newTodos;
+      });
+      
+      // Update links for the renamed category
+      setCategoryLinks(prev => {
+        const newLinks = { ...prev };
+        newLinks[newCategory] = newLinks[oldCategory] || [];
+        delete newLinks[oldCategory];
+        return newLinks;
+      });
+    }
+    setEditingCategory(null);
   };
+
+  const addLink = (category, title, url, type) => {
+    if (title.trim() && url.trim()) {
+      const newLink = {
+        id: Date.now(),
+        title: title.trim(),
+        url: url.trim(),
+        type: type || 'docs'
+      };
+      
+      setCategoryLinks(prev => ({
+          ...prev,
+        [category]: [...(prev[category] || []), newLink]
+      }));
+    }
+  };
+
+  const updateLink = (category, linkId, title, url, type) => {
+    if (title.trim() && url.trim()) {
+      setCategoryLinks(prev => ({
+        ...prev,
+        [category]: prev[category].map(link =>
+          link.id === linkId ? { ...link, title: title.trim(), url: url.trim(), type: type || link.type } : link
+        )
+      }));
+    }
+    setEditingLink(null);
+  };
+
+  const deleteLink = (category, linkId) => {
+    setCategoryLinks(prev => ({
+      ...prev,
+      [category]: prev[category].filter(link => link.id !== linkId)
+    }));
+  };
+
+  const toggleLinksExpanded = (category) => {
+    setExpandedLinks(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
+
 
   const moveTask = (taskId, fromCategory, toPriority) => {
     const task = todos[fromCategory].items.find(item => item.id === taskId);
@@ -157,56 +334,6 @@ const MatrixTodoDashboard = () => {
   };
 
   const TaskCard = ({ category, item }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editText, setEditText] = useState(item.task);
-    const [editCategory, setEditCategory] = useState(category);
-    const [editPriority, setEditPriority] = useState(item.priority);
-    const [editSubtasks, setEditSubtasks] = useState(item.subtasks || []);
-    const [newSubtask, setNewSubtask] = useState('');
-
-    const handleSave = () => {
-      if (editCategory !== category) {
-        // Move task to new category
-        deleteTask(category, item.id);
-        const maxId = Math.max(0, ...Object.values(todos).flatMap(cat => cat.items.map(t => t.id)));
-        setTodos(prev => ({
-          ...prev,
-          [editCategory]: {
-            ...prev[editCategory],
-            items: [...prev[editCategory].items, {
-              id: maxId + 1,
-              task: editText,
-              priority: editPriority,
-              completed: item.completed,
-              subtasks: editSubtasks.length > 0 ? editSubtasks : undefined
-            }]
-          }
-        }));
-      } else {
-        updateTask(category, item.id, { 
-          task: editText, 
-          priority: editPriority,
-          subtasks: editSubtasks.length > 0 ? editSubtasks : undefined
-        });
-      }
-      setIsEditing(false);
-    };
-
-    const addSubtask = () => {
-      if (newSubtask.trim()) {
-        const newSubtaskObj = { 
-          id: Date.now(), 
-          text: newSubtask.trim(), 
-          completed: false 
-        };
-        setEditSubtasks([...editSubtasks, newSubtaskObj]);
-        setNewSubtask('');
-      }
-    };
-
-    const removeSubtask = (index) => {
-      setEditSubtasks(editSubtasks.filter((_, i) => i !== index));
-    };
 
     const handleDragStart = (e) => {
       if (e.target.closest('button') || e.target.closest('input') || item.completed) {
@@ -217,102 +344,7 @@ const MatrixTodoDashboard = () => {
       e.dataTransfer.setData('category', category);
     };
 
-    if (isEditing) {
-      return (
-        <div className="bg-white p-3 rounded shadow-sm border border-blue-400">
-          <input
-            type="text"
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-            className="w-full px-2 py-1 border rounded text-sm mb-2"
-            autoFocus
-          />
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <select
-              value={editCategory}
-              onChange={(e) => setEditCategory(e.target.value)}
-              className="px-2 py-1 border rounded text-sm"
-            >
-              <option value="business">Business</option>
-              <option value="finance">Finance</option>
-              <option value="personal">Personal</option>
-            </select>
-            <select
-              value={editPriority}
-              onChange={(e) => setEditPriority(e.target.value)}
-              className="px-2 py-1 border rounded text-sm"
-            >
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="quarter">This Quarter</option>
-            </select>
-          </div>
-          
-          <div className="mb-2">
-            <p className="text-xs font-medium text-gray-600 mb-1">Subtasks:</p>
-            {editSubtasks.map((subtask, idx) => (
-              <div key={subtask.id || idx} className="flex items-center gap-1 mb-1">
-                <button
-                  onClick={() => {
-                    const updated = [...editSubtasks];
-                    updated[idx] = { ...subtask, completed: !subtask.completed };
-                    setEditSubtasks(updated);
-                  }}
-                  className="flex-shrink-0"
-                >
-                  <CheckCircle className={`w-3 h-3 ${subtask.completed ? 'text-green-500' : 'text-gray-400'} hover:text-green-600`} />
-                </button>
-                <span className={`text-xs flex-1 ${subtask.completed ? 'line-through' : ''}`}>{subtask.text}</span>
-                <button
-                  onClick={() => removeSubtask(idx)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-            <div className="flex gap-1 mt-1">
-              <input
-                type="text"
-                value={newSubtask}
-                onChange={(e) => setNewSubtask(e.target.value)}
-                placeholder="Add subtask..."
-                className="flex-1 px-2 py-1 border rounded text-xs"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSubtask())}
-              />
-              <button
-                onClick={addSubtask}
-                className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
-              >
-                <Plus className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-          
-          <div className="flex gap-1">
-            <button
-              onClick={handleSave}
-              className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
-            >
-              Save All
-            </button>
-            <button
-              onClick={() => {
-                setIsEditing(false);
-                setEditText(item.task);
-                setEditCategory(category);
-                setEditPriority(item.priority);
-                setEditSubtasks(item.subtasks || []);
-                setNewSubtask('');
-              }}
-              className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      );
-    }
+
 
     return (
       <div 
@@ -328,7 +360,34 @@ const MatrixTodoDashboard = () => {
             <CheckCircle className={`w-4 h-4 ${item.completed ? 'text-green-500' : 'text-gray-400'}`} />
           </button>
           <div className="flex-1 min-w-0">
-            <p className={`text-sm font-medium text-gray-800 break-words ${item.completed ? 'line-through text-green-700' : ''}`}>
+            {editingTask === item.id ? (
+              <textarea
+                defaultValue={item.task}
+                className="text-xs font-medium text-gray-800 bg-white border-2 border-blue-400 rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-4 focus:ring-blue-200 resize-none shadow-xl"
+                rows={Math.max(6, Math.ceil(item.task.length / 20))}
+                style={{ minHeight: '160px', width: '200%', marginLeft: '-50%', zIndex: 50, position: 'relative' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    updateTask(category, item.id, { task: target.value.trim() });
+                    setEditingTask(null);
+                  } else if (e.key === 'Escape') {
+                    setEditingTask(null);
+                  }
+                }}
+                onBlur={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  updateTask(category, item.id, { task: target.value.trim() });
+                  setEditingTask(null);
+                }}
+                autoFocus
+              />
+            ) : (
+              <p 
+                className={`text-xs font-medium text-gray-800 break-words cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded ${item.completed ? 'line-through text-green-700' : ''}`}
+                onClick={() => setEditingTask(item.id)}
+              >
               {item.task}
               {item.subtasks && item.subtasks.length > 0 && (
                 <span className="ml-1 text-xs text-gray-500">
@@ -336,6 +395,22 @@ const MatrixTodoDashboard = () => {
                 </span>
               )}
             </p>
+            )}
+          </div>
+          {editingTask !== item.id && (
+            <button
+              onClick={() => {
+                const statuses = ['green', 'yellow', 'red'];
+                const currentIndex = statuses.indexOf(item.status || 'green');
+                const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+                updateTask(category, item.id, { status: nextStatus });
+              }}
+              className={`w-3 h-3 rounded-full transition-colors flex-shrink-0 ${item.status === 'red' ? 'bg-red-500 hover:bg-red-600' : item.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
+              title={item.status === 'red' ? 'Blocked' : item.status === 'yellow' ? 'Waiting' : 'For me to do'}
+            />
+          )}
+        </div>
+        <div className="space-y-1">
             {item.subtasks && item.subtasks.length > 0 && (
               <ul className="mt-1 ml-2">
                 {item.subtasks.map((subtask) => (
@@ -349,20 +424,81 @@ const MatrixTodoDashboard = () => {
                     >
                       <CheckCircle className={`w-3 h-3 ${subtask.completed ? 'text-green-500' : 'text-gray-400'} hover:text-green-600`} />
                     </button>
-                    <span className={subtask.completed ? 'line-through text-gray-500' : ''}>{subtask.text}</span>
+                  {editingSubtask === subtask.id ? (
+                    <textarea
+                      defaultValue={subtask.text}
+                      className="flex-1 text-xs text-gray-600 bg-white border-2 border-blue-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-4 focus:ring-blue-200 resize-none shadow-xl"
+                      rows={Math.max(4, Math.ceil(subtask.text.length / 15))}
+                      style={{ minHeight: '120px', width: '150%', marginLeft: '-25%', zIndex: 50, position: 'relative' }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          const target = e.target as HTMLTextAreaElement;
+                          updateSubtaskText(category, item.id, subtask.id, target.value.trim());
+                          setEditingSubtask(null);
+                        } else if (e.key === 'Escape') {
+                          setEditingSubtask(null);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        updateSubtaskText(category, item.id, subtask.id, target.value.trim());
+                        setEditingSubtask(null);
+                      }}
+                      autoFocus
+                    />
+                  ) : (
+                    <span 
+                      className={`flex-1 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded ${subtask.completed ? 'line-through text-gray-500' : ''}`}
+                      onClick={() => setEditingSubtask(subtask.id)}
+                    >
+                      {subtask.text}
+                    </span>
+                  )}
+                                      {editingSubtask !== subtask.id && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const statuses = ['green', 'yellow', 'red'];
+                          const currentIndex = statuses.indexOf(subtask.status || 'green');
+                          const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+                          updateSubtask(category, item.id, subtask.id, subtask.completed, nextStatus);
+                        }}
+                        className={`w-2 h-2 rounded-full transition-colors flex-shrink-0 ${subtask.status === 'red' ? 'bg-red-500 hover:bg-red-600' : subtask.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
+                        title={subtask.status === 'red' ? 'Blocked' : subtask.status === 'yellow' ? 'Waiting' : 'For me to do'}
+                      />
+                    )}
                   </li>
                 ))}
               </ul>
             )}
+          <div className="mt-1">
+            <input
+              type="text"
+              placeholder="Type @ to add subtask..."
+              className="w-full text-xs border-none bg-transparent focus:outline-none text-gray-500 placeholder-gray-400"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.target.value.trim()) {
+                  const text = e.target.value.trim();
+                  if (text.startsWith('@')) {
+                    const subtaskText = text.substring(1).trim();
+                    if (subtaskText) {
+                      const newSubtask = {
+                        id: Date.now() + Math.random(),
+                        text: subtaskText,
+                        completed: false
+                      };
+                      updateTask(category, item.id, {
+                        subtasks: [...(item.subtasks || []), newSubtask]
+                      });
+                      e.target.value = '';
+                    }
+                  }
+                }
+              }}
+            />
           </div>
           <div className="flex gap-1 flex-shrink-0">
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-gray-500 hover:text-gray-700"
-              title="Edit task, category, priority, and subtasks"
-            >
-              <Edit2 className="w-3 h-3" />
-            </button>
             <button
               onClick={() => deleteTask(category, item.id)}
               className="text-red-500 hover:text-red-700"
@@ -385,7 +521,7 @@ const MatrixTodoDashboard = () => {
       const taskId = parseInt(e.dataTransfer.getData('taskId'));
       const fromCategory = e.dataTransfer.getData('category');
       if (priority !== 'completed') {
-        moveTask(taskId, fromCategory, priority);
+      moveTask(taskId, fromCategory, priority);
       }
     };
 
@@ -398,7 +534,7 @@ const MatrixTodoDashboard = () => {
       setIsDragOver(false);
     };
 
-    const isAddingNewTask = newTask.category === category && newTask.priority === priority;
+
 
     return (
       <div 
@@ -412,108 +548,55 @@ const MatrixTodoDashboard = () => {
             <TaskCard key={item.id} category={category} item={item} />
           ))}
           
-          {isAddingNewTask && priority !== 'completed' ? (
-            <div className="bg-white p-2 rounded shadow-sm border border-blue-400">
-              <input
-                type="text"
-                value={newTask.text}
-                onChange={(e) => setNewTask(prev => ({ ...prev, text: e.target.value }))}
-                placeholder="Enter new task..."
-                className="w-full px-2 py-1 border rounded text-sm mb-2"
-                autoFocus
-              />
-              
-              {newTask.subtasks.length > 0 && (
-                <div className="mb-2">
-                  <p className="text-xs font-medium text-gray-600 mb-1">Subtasks:</p>
-                  {newTask.subtasks.map((subtask) => (
-                    <div key={subtask.id} className="flex items-center gap-1 mb-1">
-                      <CheckCircle className={`w-3 h-3 ${subtask.completed ? 'text-green-500' : 'text-gray-400'}`} />
-                      <span className={`text-xs flex-1 ${subtask.completed ? 'line-through' : ''}`}>{subtask.text}</span>
-                      <button
-                        onClick={() => setNewTask(prev => ({
-                          ...prev,
-                          subtasks: prev.subtasks.filter((s) => s.id !== subtask.id)
-                        }))}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              <div className="flex gap-1 mb-2">
-                <input
-                  type="text"
-                  value={newSubtaskInput}
-                  onChange={(e) => setNewSubtaskInput(e.target.value)}
-                  placeholder="Add subtask (optional)..."
-                  className="flex-1 px-2 py-1 border rounded text-xs"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      if (newSubtaskInput.trim()) {
-                        setNewTask(prev => ({
-                          ...prev,
-                          subtasks: [...prev.subtasks, { 
-                            id: Date.now(), 
-                            text: newSubtaskInput.trim(), 
-                            completed: false 
-                          }]
+          {priority !== 'completed' && (
+            <div className="relative">
+              <textarea
+                                        placeholder="Type tasks here..."
+                className="w-full p-2 text-xs border border-gray-200 rounded bg-white/50 backdrop-blur-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                rows={3}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    const text = target.value.trim();
+                    if (text) {
+                      // Parse for subtasks (lines starting with - or * or •)
+                      const lines = text.split('\n');
+                      const mainTask = lines[0];
+                      const subtasks = lines.slice(1)
+                        .filter(line => line.trim().match(/^[-*•]\s+/))
+                        .map(line => ({
+                          id: Date.now() + Math.random(),
+                          text: line.trim().replace(/^[-*•]\s+/, ''),
+                          completed: false
                         }));
-                        setNewSubtaskInput('');
-                      }
-                    }
-                  }}
-                />
-                <button
-                  onClick={() => {
-                    if (newSubtaskInput.trim()) {
-                      setNewTask(prev => ({
-                        ...prev,
-                        subtasks: [...prev.subtasks, { 
-                          id: Date.now(), 
-                          text: newSubtaskInput.trim(), 
-                          completed: false 
-                        }]
+                      
+                      const maxId = Math.max(0, ...Object.values(todos).flatMap(cat => cat.items.map(item => item.id)));
+                      const newTaskObj = {
+                        id: maxId + 1,
+                        task: mainTask,
+                        priority: priority,
+                        completed: false,
+                        status: 'green',
+                        subtasks: subtasks.length > 0 ? subtasks.map(s => ({ ...s, status: 'green' })) : undefined
+                      };
+                      
+                      setTodos(prev => ({
+                          ...prev,
+                        [category]: {
+                          ...prev[category],
+                          items: [...prev[category].items, newTaskObj]
+                        }
                       }));
-                      setNewSubtaskInput('');
+                      
+                      target.value = '';
                     }
-                  }}
-                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
+                  }
+                }}
+                style={{ minHeight: '60px' }}
+              />
+
               </div>
-              
-              <div className="flex gap-1">
-                <button
-                  onClick={addTask}
-                  className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
-                >
-                  Add Task
-                </button>
-                <button
-                  onClick={() => {
-                    setNewTask({ category: null, priority: null, text: '', subtasks: [] });
-                    setNewSubtaskInput('');
-                  }}
-                  className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setNewTask({ category, priority, text: '', subtasks: [] })}
-              className="w-full border border-dashed border-gray-300 p-2 rounded text-gray-500 hover:text-gray-700 hover:border-gray-400 flex items-center justify-center gap-1 text-sm"
-            >
-              <Plus className="w-3 h-3" />
-              Add task
-            </button>
           )}
         </div>
       </div>
@@ -526,14 +609,14 @@ const MatrixTodoDashboard = () => {
       completed: 0, 
       totalSubtasks: 0,
       completedSubtasks: 0,
-      byPriority: { week: 0, month: 0, quarter: 0, completed: 0 } 
+      byPriority: { week: 0, month: 0, quarter: 0, future: 0, completed: 0 } 
     };
     Object.values(todos).forEach(category => {
       category.items.forEach(item => {
         stats.total++;
         if (item.completed) stats.completed++;
         if (item.priority in stats.byPriority) {
-          stats.byPriority[item.priority]++;
+          stats.byPriority[item.priority as keyof typeof stats.byPriority]++;
         }
         
         if (item.subtasks) {
@@ -545,17 +628,17 @@ const MatrixTodoDashboard = () => {
     return stats;
   };
 
-  const addIdea = () => {
-    if (!newIdea.trim()) return;
+  const addIdea = (text) => {
+    if (!text.trim()) return;
     
     const newIdeaObj = {
       id: Date.now(),
-      text: newIdea.trim(),
+      text: text.trim(),
       timestamp: new Date().toISOString()
     };
     
     setIdeas([newIdeaObj, ...ideas]);
-    setNewIdea('');
+    setIsAddingNewIdea(false);
   };
 
   const deleteIdea = (ideaId) => {
@@ -570,25 +653,118 @@ const MatrixTodoDashboard = () => {
   };
 
   const convertIdeaToTask = (idea) => {
-    // Add to business category, this month priority by default
-    const maxId = Math.max(0, ...Object.values(todos).flatMap(cat => cat.items.map(item => item.id)));
     const newTaskFromIdea = {
-      id: maxId + 1,
+      id: Date.now(),
       task: idea.text,
-      priority: 'month',
-      completed: false
+      priority: 'week',
+      completed: false,
+      status: 'green'
     };
     
     setTodos(prev => ({
       ...prev,
-      business: {
-        ...prev.business,
-        items: [...prev.business.items, newTaskFromIdea]
+      venture: {
+        ...prev.venture,
+        items: [...prev.venture.items, newTaskFromIdea]
       }
     }));
     
     // Remove the idea after converting
     deleteIdea(idea.id);
+  };
+
+  // Chatbot functions
+  const sendMessage = async (message) => {
+    if (!message.trim()) return;
+
+    const userMessage = {
+      id: Date.now(),
+      type: 'user',
+      content: message,
+      timestamp: new Date().toISOString()
+    };
+
+    setChatMessages(prev => [...prev, userMessage]);
+    setChatInput('');
+    setIsChatLoading(true);
+
+    try {
+      const response = await processWithClaude(message);
+      const assistantMessage = {
+        id: Date.now() + 1,
+        type: 'assistant',
+        content: response,
+        timestamp: new Date().toISOString()
+      };
+      setChatMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'assistant',
+        content: "I'm sorry, I encountered an error. Please try again or check your internet connection.",
+        timestamp: new Date().toISOString()
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  const processWithClaude = async (userMessage) => {
+    // Get current state for context
+    const currentTasks = Object.entries(todos).flatMap(([category, data]) =>
+      data.items.map(item => ({
+        ...item,
+        category,
+        subtasks: item.subtasks || []
+      }))
+    );
+
+    const completedTasks = currentTasks.filter(task => task.completed);
+    const pendingTasks = currentTasks.filter(task => !task.completed);
+    const currentIdeas = ideas;
+
+    const context = {
+      todos: {
+        venture: todos.venture.items,
+        finance: todos.finance.items,
+        personal: todos.personal.items
+      },
+      ideas: currentIdeas,
+      stats: getStats(),
+      completedTasks: completedTasks.length,
+      pendingTasks: pendingTasks.length
+    };
+
+    try {
+      const response = await fetch('/api/claude', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userMessage,
+          context
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.response;
+
+    } catch (error) {
+      console.error('Error calling Claude API:', error);
+      throw error;
+    }
+  };
+
+  const handleChatSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(chatInput);
   };
 
   const stats = getStats();
@@ -600,7 +776,7 @@ const MatrixTodoDashboard = () => {
         <p className="text-gray-600">Check off tasks and subtasks • Edit to modify • Drag to reprioritize • Capture ideas below</p>
       </div>
 
-      <div className="grid grid-cols-8 gap-4 mb-6">
+      <div className="grid grid-cols-9 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <p className="text-sm text-gray-600">Total Tasks</p>
           <p className="text-2xl font-bold">{stats.total}</p>
@@ -628,6 +804,10 @@ const MatrixTodoDashboard = () => {
           <p className="text-2xl font-bold text-blue-500">{stats.byPriority.quarter}</p>
         </div>
         <div className="bg-white p-4 rounded-lg shadow">
+          <p className="text-sm text-gray-600">Future Goals</p>
+          <p className="text-2xl font-bold text-purple-500">{stats.byPriority.future || 0}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
           <p className="text-sm text-gray-600">Completed</p>
           <p className="text-2xl font-bold text-green-600">{stats.byPriority.completed || 0}</p>
         </div>
@@ -638,35 +818,174 @@ const MatrixTodoDashboard = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="grid grid-cols-5">
-          <div className="p-4 bg-gray-100 font-semibold">Category</div>
+        {Object.entries(todos).map(([category, data]) => (
+          <div key={category} className="border-t">
+            {/* Category Header */}
+            <div className={`p-4 ${data.color} text-white flex items-center gap-2 shadow-md border-b-2 border-white/20`}>
+              {data.icon}
+              {editingCategory === category ? (
+                <input
+                  type="text"
+                  defaultValue={category}
+                  className="bg-white/20 text-white font-semibold border-none outline-none rounded px-2 py-1 flex-1 placeholder-white/70"
+                  autoFocus
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      updateCategoryName(category, e.target.value);
+                    }
+                  }}
+                  onBlur={(e) => updateCategoryName(category, e.target.value)}
+                />
+              ) : (
+                <span 
+                  className="font-semibold capitalize cursor-pointer hover:bg-white/10 px-2 py-1 rounded transition-colors text-white"
+                  onClick={() => setEditingCategory(category)}
+                >
+                  {category}
+                </span>
+              )}
+            </div>
+            
+            {/* Links Section */}
+            <div className="bg-gray-50 border-b">
+              <div 
+                className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => toggleLinksExpanded(category)}
+              >
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Link className="w-4 h-4" />
+                  <span>Project Links ({categoryLinks[category]?.length || 0})</span>
+                </div>
+                {expandedLinks[category] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </div>
+              
+              {expandedLinks[category] && (
+                <div className="px-4 pb-3 space-y-2">
+                  {/* Existing Links */}
+                  {categoryLinks[category]?.map(link => (
+                    <div key={link.id} className="flex items-center gap-2 p-2 bg-white rounded border">
+                      {editingLink === link.id ? (
+                        <div className="flex-1 space-y-1">
+                          <input
+                            type="text"
+                            defaultValue={link.title}
+                            className="w-full text-sm border border-gray-300 rounded px-2 py-1"
+                            placeholder="Link title"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                updateLink(category, link.id, e.target.value, link.url, link.type);
+                              }
+                            }}
+                            onBlur={(e) => updateLink(category, link.id, e.target.value, link.url, link.type)}
+                          />
+                          <input
+                            type="url"
+                            defaultValue={link.url}
+                            className="w-full text-sm border border-gray-300 rounded px-2 py-1"
+                            placeholder="URL"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                updateLink(category, link.id, link.title, e.target.value, link.type);
+                              }
+                            }}
+                            onBlur={(e) => updateLink(category, link.id, link.title, e.target.value, link.type)}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <ExternalLink className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex-1 text-sm text-blue-600 hover:text-blue-800 truncate"
+                            title={link.title}
+                          >
+                            {link.title}
+                          </a>
+                        </>
+                      )}
+                      
+                      <div className="flex gap-1">
+                        {editingLink === link.id ? (
+                          <button
+                            onClick={() => setEditingLink(null)}
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => setEditingLink(link.id)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={() => deleteLink(category, link.id)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Add New Link */}
+                  <div className="flex items-center gap-2 p-2 bg-gray-100 rounded border-dashed border-2 border-gray-300">
+                    <Plus className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600">Add new link</span>
+                    <button
+                      onClick={() => {
+                        const title = prompt('Enter link title:');
+                        const url = prompt('Enter URL:');
+                        if (title && url) {
+                          addLink(category, title, url);
+                        }
+                      }}
+                      className="ml-auto text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Priority Headers for this Category */}
+            <div className="grid grid-cols-5">
           {priorities.map(priority => (
             <div key={priority} className={`p-4 text-center font-semibold ${priorityColors[priority]}`}>
               <div className="text-lg">{priorityLabels[priority]}</div>
-              <div className={`text-sm ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : priority === 'quarter' ? 'text-blue-600' : 'text-green-600'}`}>
-                {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : priority === 'quarter' ? 'Strategic' : 'Done'}
+                  <div className={`text-sm ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : priority === 'quarter' ? 'text-blue-600' : priority === 'future' ? 'text-purple-600' : 'text-green-600'}`}>
+                    {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : priority === 'quarter' ? 'Strategic' : priority === 'future' ? 'Long-term' : 'Done'}
               </div>
             </div>
           ))}
         </div>
 
-        {Object.entries(todos).map(([category, data]) => (
-          <div key={category} className="grid grid-cols-5 border-t">
-            <div className={`p-4 ${data.color} text-white flex items-center gap-2`}>
-              {data.icon}
-              <span className="font-semibold capitalize">{category}</span>
-            </div>
+            {/* Matrix Grid */}
+            <div className="grid grid-cols-5">
             {priorities.map(priority => (
               <div key={priority} className="p-2">
                 <MatrixCell category={category} priority={priority} />
               </div>
             ))}
+            </div>
           </div>
         ))}
       </div>
 
+      {/* Ideas and Assistant Section */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Ideas Section */}
-      <div className="mt-8 bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="lg:col-span-2 bg-white rounded-lg shadow-lg overflow-hidden">
         <div 
           className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white p-4 cursor-pointer flex items-center justify-between"
           onClick={() => setIdeasExpanded(!ideasExpanded)}
@@ -684,90 +1003,239 @@ const MatrixTodoDashboard = () => {
         {ideasExpanded && (
           <div className="p-6">
             <div className="mb-4">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={newIdea}
-                  onChange={(e) => setNewIdea(e.target.value)}
-                  placeholder="Capture an idea..."
-                  className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  onKeyPress={(e) => e.key === 'Enter' && addIdea()}
-                />
-                <button
-                  onClick={addIdea}
-                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add
-                </button>
+                <p className="text-xs text-gray-500">💡 Tip: Click on a sticky note to edit, or click the checkmark to convert an idea into a task</p>
               </div>
-              <p className="text-xs text-gray-500 mt-1">💡 Tip: Click the checkmark to convert an idea into a task</p>
-            </div>
-            
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {ideas.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">No ideas yet. Start capturing your thoughts!</p>
-              ) : (
-                ideas.map((idea) => (
-                  <div key={idea.id} className="bg-gray-50 p-3 rounded-lg border border-gray-200 hover:border-orange-300 transition-colors">
-                    {editingIdea === idea.id ? (
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          defaultValue={idea.text}
-                          className="flex-1 px-2 py-1 border rounded"
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Add Idea Sticky Note */}
+                <div 
+                  className="relative transform rotate-1 hover:rotate-0 transition-transform duration-200 cursor-pointer"
+                  style={{ 
+                    transform: `rotate(-1deg)`,
+                    zIndex: ideas.length + 1 
+                  }}
+                  onClick={() => setIsAddingNewIdea(true)}
+                >
+                  <div className="bg-amber-100 p-2 rounded-sm shadow-lg border-l-4 border-amber-300 min-h-[40px] relative border-2 border-dashed border-amber-400">
+                    {/* Sticky note shadow effect */}
+                    <div className="absolute -bottom-1 -right-1 w-full h-full bg-amber-200 rounded-sm transform rotate-1"></div>
+                    
+                    {isAddingNewIdea ? (
+                      <div className="relative z-10">
+                        <textarea
+                          placeholder="Type your idea here..."
+                          className="w-full bg-transparent border-none outline-none resize-none text-gray-800 font-handwriting text-sm"
+                          rows={3}
                           autoFocus
                           onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              addIdea(e.target.value);
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value.trim()) {
+                              addIdea(e.target.value);
+                            } else {
+                              setIsAddingNewIdea(false);
+                            }
+                          }}
+                />
+                <button
+                          onClick={() => setIsAddingNewIdea(false)}
+                          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
+                >
+                          <X className="w-4 h-4" />
+                </button>
+              </div>
+                    ) : (
+                      <div className="relative z-10 flex items-center justify-center h-full">
+                        <div className="text-center">
+                          <Plus className="w-4 h-4 text-yellow-600 mx-auto mb-1" />
+                          <p className="text-gray-600 font-handwriting text-xs">Add idea</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+            </div>
+            
+                {/* Existing Ideas */}
+                {ideas.map((idea, index) => (
+                  <div 
+                    key={idea.id} 
+                    className="relative transform rotate-1 hover:rotate-0 transition-transform duration-200 cursor-pointer"
+                    style={{ 
+                      transform: `rotate(${(index % 3 - 1) * 2}deg)`,
+                      zIndex: ideas.length - index 
+                    }}
+                    onClick={() => setEditingIdea(idea.id)}
+                  >
+                    <div className="bg-amber-100 p-2 rounded-sm shadow-lg border-l-4 border-amber-300 min-h-[40px] relative">
+                      {/* Sticky note shadow effect */}
+                      <div className="absolute -bottom-1 -right-1 w-full h-full bg-amber-200 rounded-sm transform rotate-1"></div>
+                      
+                    {editingIdea === idea.id ? (
+                        <div className="relative z-10">
+                          <textarea
+                          defaultValue={idea.text}
+                            className="w-full bg-transparent border-none outline-none resize-none text-gray-800 font-handwriting text-sm"
+                            rows={3}
+                          autoFocus
+                          onKeyPress={(e) => {
+                              if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
                               updateIdea(idea.id, e.target.value);
                             }
                           }}
                           onBlur={(e) => updateIdea(idea.id, e.target.value)}
                         />
                         <button
-                          onClick={() => setEditingIdea(null)}
-                          className="text-gray-500 hover:text-gray-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingIdea(null);
+                            }}
+                            className="absolute top-0 right-0 text-gray-500 hover:text-gray-700"
                         >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="text-gray-800">{idea.text}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                        <div className="relative z-10">
+                          <p className="text-gray-800 font-handwriting text-xs leading-tight mb-1">{idea.text}</p>
+                          <p className="text-xs text-gray-600 font-mono">
                             {new Date(idea.timestamp).toLocaleDateString()} at {new Date(idea.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
-                        </div>
-                        <div className="flex gap-1 flex-shrink-0">
+                          
+                          {/* Action buttons */}
+                          <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 hover:opacity-100 transition-opacity">
                           <button
-                            onClick={() => convertIdeaToTask(idea)}
-                            className="text-green-600 hover:text-green-700"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                convertIdeaToTask(idea);
+                              }}
+                              className="text-green-600 hover:text-green-700 bg-white/80 rounded-full p-1"
                             title="Convert to task"
                           >
-                            <CheckCircle className="w-4 h-4" />
+                              <CheckCircle className="w-3 h-3" />
                           </button>
                           <button
-                            onClick={() => setEditingIdea(idea.id)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            <Edit2 className="w-4 h-4" />
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingIdea(idea.id);
+                              }}
+                              className="text-gray-500 hover:text-gray-700 bg-white/80 rounded-full p-1"
+                            >
+                              <Edit2 className="w-3 h-3" />
                           </button>
                           <button
-                            onClick={() => deleteIdea(idea.id)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            <Trash2 className="w-4 h-4" />
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteIdea(idea.id);
+                              }}
+                              className="text-red-500 hover:text-red-700 bg-white/80 rounded-full p-1"
+                            >
+                              <Trash2 className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
                     )}
                   </div>
-                ))
+                  </div>
+                ))}
+              </div>
+            </div>
               )}
             </div>
+
+        {/* Productivity Assistant */}
+        <div className="lg:col-span-2 bg-white rounded-lg shadow-lg overflow-hidden">
+          <div 
+            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4 cursor-pointer flex items-center justify-between"
+            onClick={() => setChatbotExpanded(!chatbotExpanded)}
+          >
+            <div className="flex items-center gap-3">
+              <Bot className="w-6 h-6" />
+              <h2 className="text-xl font-semibold">Productivity Assistant</h2>
+              <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
+                AI-powered
+              </span>
           </div>
-        )}
+            {chatbotExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </div>
+          
+          {chatbotExpanded && (
+            <div className="flex flex-col h-96">
+              {/* Chat Messages */}
+              <div ref={chatMessagesRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+                {chatMessages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs lg:max-w-sm px-4 py-2 rounded-lg ${
+                        message.type === 'user'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        {message.type === 'assistant' && (
+                          <Bot className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        )}
+                        <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                      </div>
+                      <div className="text-xs opacity-70 mt-1">
+                        {new Date(message.timestamp).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {isChatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Bot className="w-4 h-4" />
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Chat Input */}
+              <div className="border-t p-4">
+                <form onSubmit={handleChatSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Ask for help with tasks, ideas, or planning..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    disabled={isChatLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!chatInput.trim() || isChatLoading}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </form>
+                <div className="mt-2 text-xs text-gray-500">
+                  💡 Try: "Help me organize my thoughts" or "What should I focus on this week?"
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
