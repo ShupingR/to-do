@@ -5,11 +5,288 @@
       "color": "bg-blue-600",
       "items": [
         {
-          "id": 7,
-          "task": "d",
+          "id": 1,
+          "task": "PortCo Mgt Dev",
+          "priority": "week",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752377191968.582,
+              "text": "set up automated forwarding",
+              "completed": false
+            },
+            {
+              "id": 1752377201574.4946,
+              "text": "send out founder emails",
+              "completed": false
+            },
+            {
+              "id": 1752377222388.5361,
+              "text": "compare empty emails",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "task": "Nvidia Partnership Program",
+          "priority": "month",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752377270606.025,
+              "text": "replied to all the founders",
+              "completed": true
+            },
+            {
+              "id": 1752377290811.8499,
+              "text": "reach out to VC alliance email",
+              "completed": false,
+              "status": "yellow"
+            },
+            {
+              "id": 1752380944543.8247,
+              "text": "update scot on this",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "task": "Deal sourcing on the battery company",
+          "priority": "week",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752377517387.1694,
+              "text": "reach out to founder for conversation",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "task": "Found my own AI powered VC firm",
           "priority": "future",
           "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752377596632.399,
+              "text": "Firm - VC firm non-tech in & out",
+              "completed": false
+            },
+            {
+              "id": 1752377619538.2021,
+              "text": "Company - AI platform for VC firm",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "task": "LP fundraising Identify opportunities to contribute to I-40",
+          "priority": "quarter",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752377787473.9993,
+              "text": "Pitch deck for tweener fund: index strategy + follow on, s&p500 benchmark",
+              "completed": false
+            },
+            {
+              "id": 1752377799175.439,
+              "text": "LP identification",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "task": "Hyperscaler Partnership",
+          "priority": "quarter",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752378876497.1492,
+              "text": "google",
+              "completed": false
+            },
+            {
+              "id": 1752378881037.04,
+              "text": "aws",
+              "completed": false
+            },
+            {
+              "id": 1752378890040.2869,
+              "text": "coreweave",
+              "completed": false
+            },
+            {
+              "id": 1752378895663.7605,
+              "text": "microsoft",
+              "completed": false
+            },
+            {
+              "id": 1752383268968.7175,
+              "text": "",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "task": "CTO forum",
+          "priority": "quarter",
+          "completed": false,
           "status": "green"
+        },
+        {
+          "id": 8,
+          "task": "Competitive analysis",
+          "priority": "week",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752378959820.7993,
+              "text": "serfa",
+              "completed": false
+            },
+            {
+              "id": 1752378967058.8245,
+              "text": "weraise",
+              "completed": false
+            },
+            {
+              "id": 1752379410210.3472,
+              "text": "pitchbook carta",
+              "completed": false
+            },
+            {
+              "id": 1752379594357.2153,
+              "text": "vela",
+              "completed": false
+            },
+            {
+              "id": 1752379673736.5222,
+              "text": "forge",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "task": "Extended customers",
+          "priority": "month",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752379014807.578,
+              "text": "1616 venture",
+              "completed": false
+            },
+            {
+              "id": 1752379019981.1077,
+              "text": "WIN",
+              "completed": false
+            },
+            {
+              "id": 1752379030578.9744,
+              "text": "primodial",
+              "completed": false
+            },
+            {
+              "id": 1752381672530.4988,
+              "text": "cofounder capital",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "task": "Extended scope",
+          "priority": "month",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752379142430.8745,
+              "text": "portco financial management tool - oz future proof",
+              "completed": false
+            },
+            {
+              "id": 1752379205301.649,
+              "text": "funds of funds",
+              "completed": false
+            },
+            {
+              "id": 1752379236033.648,
+              "text": "GP & LP reporting",
+              "completed": false
+            },
+            {
+              "id": 1752379393946.6243,
+              "text": "capital flow network, workflow across entities",
+              "completed": false
+            },
+            {
+              "id": 1752379402224.8684,
+              "text": "data sourcing",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "task": "Join Xoogler network",
+          "priority": "quarter",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 14,
+          "task": "Extended scope",
+          "priority": "quarter",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752379864566.4023,
+              "text": "investors/firm investment portfolio research - Bradley Horowitz and Larry Li",
+              "completed": false
+            },
+            {
+              "id": 1752379988162.578,
+              "text": "retail investors to invest in private startups",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "task": "Learn",
+          "priority": "week",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752380883162.1826,
+              "text": "ask scot about safe from two companies",
+              "completed": false
+            },
+            {
+              "id": 1752380896936.893,
+              "text": "https://www.youtube.com/watch?v=RwaLaDtTqag",
+              "completed": false
+            }
+          ]
         }
       ]
     },
@@ -18,30 +295,85 @@
       "color": "bg-green-600",
       "items": [
         {
-          "id": 2,
-          "task": "Review investment portfolio",
-          "priority": "month",
+          "id": 11,
+          "task": "Ways to identify new stocks",
+          "priority": "future",
           "completed": false,
-          "status": "not-started",
-          "subtasks": []
+          "status": "green"
         },
         {
-          "id": 6,
-          "task": "ddd",
+          "id": 12,
+          "task": "Dollar cost average - coinbase, circle, coreweave",
+          "priority": "future",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 15,
+          "task": "Ways to invest in startups - forge",
+          "priority": "future",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 16,
+          "task": "NC/CA Unemployment application check",
           "priority": "week",
           "completed": false,
           "status": "green"
         },
         {
-          "id": 8,
-          "task": "dd",
+          "id": 17,
+          "task": "Ramp business card",
+          "priority": "month",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 18,
+          "task": "Self directed IRA for Kurtis & Me",
+          "priority": "week",
+          "completed": false,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752383937186.087,
+              "text": "call fidelity wrt self directed IRA",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "task": "Trim Meta and Google",
+          "priority": "month",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 20,
+          "task": "Business expense better tracking",
           "priority": "quarter",
           "completed": false,
           "status": "green"
         },
         {
-          "id": 9,
-          "task": "cc",
+          "id": 25,
+          "task": "Move money to SGOV",
+          "priority": "week",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 26,
+          "task": "Kurtis 401k & HSA check",
+          "priority": "completed",
+          "completed": true,
+          "status": "green"
+        },
+        {
+          "id": 27,
+          "task": "End of tax season review - Kurtis 401k account adjustment",
           "priority": "future",
           "completed": false,
           "status": "green"
@@ -53,17 +385,23 @@
       "color": "bg-purple-600",
       "items": [
         {
-          "id": 3,
-          "task": "Plan weekend activities",
+          "id": 21,
+          "task": "Visa application",
           "priority": "week",
           "completed": false,
-          "status": "not-started",
-          "subtasks": []
+          "status": "green"
         },
         {
-          "id": 10,
-          "task": "ccd",
-          "priority": "future",
+          "id": 22,
+          "task": "Self pick up, boat and fridge",
+          "priority": "month",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 23,
+          "task": "Add a door",
+          "priority": "quarter",
           "completed": false,
           "status": "green"
         }
@@ -72,9 +410,19 @@
   },
   "ideas": [
     {
-      "id": 1,
-      "text": "Create a productivity app",
-      "timestamp": "2024-01-01T00:00:00.000Z"
+      "id": 1752381552070,
+      "text": "Jordan Lake Farm Thurs & Sat",
+      "timestamp": "2025-07-13T04:39:12.070Z"
+    },
+    {
+      "id": 1752376532376,
+      "text": "try code review app cubic",
+      "timestamp": "2025-07-13T03:15:32.376Z"
+    },
+    {
+      "id": 1752376486874,
+      "text": "the chatbot should be able to control the board and put in things accordlingly",
+      "timestamp": "2025-07-13T03:14:46.874Z"
     }
   ],
   "categoryLinks": {
@@ -109,6 +457,55 @@
       }
     ]
   },
-  "chatMessages": [],
-  "lastSaved": "2025-07-13T03:06:24.148Z"
+  "chatMessages": [
+    {
+      "id": 1752376290721,
+      "type": "user",
+      "content": "here is a braindump, help me organize them into this matrix dashboard. Personal things, i want to sell our boat, pickup and 2nd fridge. I also need to apply visa.",
+      "timestamp": "2025-07-13T03:11:30.721Z"
+    },
+    {
+      "id": 1752376302923,
+      "type": "assistant",
+      "content": "I'll help you organize these tasks into your matrix dashboard. Based on your brain dump, here are my suggestions:\n\n**New Tasks to Add:**\n\n**Personal Category:**\n1. **\"Sell boat\"** - Priority: Month\n   - This is a significant task that requires planning\n   - Suggested subtasks: Take photos, research market price, list on platforms, schedule viewings\n\n2. **\"Sell pickup truck\"** - Priority: Month\n   - Similar process to the boat\n   - Suggested subtasks: Clean/detail vehicle, gather paperwork, get valuation, create listing\n\n3. **\"Sell 2nd fridge\"** - Priority: Week\n   - Quicker to sell than vehicles\n   - Suggested subtasks: Clean fridge, take photos, post on marketplace\n\n4. **\"Apply for visa\"** - Priority: Week (or Today if urgent!)\n   - Time-sensitive and important\n   - Suggested subtasks: Check requirements, gather documents, fill application, submit & pay fees\n\n**Quick Actions:**\n- Start with the visa application if it's time-sensitive\n- Bundle the selling tasks - you can use similar platforms and processes\n- Take photos of all items on the same day for efficiency\n\n**Note:** I see you have some test tasks (d, dd, ddd, cc, ccd) in your dashboard. Consider cleaning those up to keep your focus on real priorities.\n\nWould you like me to help break down any of these tasks further or suggest the best order to tackle them?",
+      "timestamp": "2025-07-13T03:11:42.922Z"
+    },
+    {
+      "id": 1752376333802,
+      "type": "user",
+      "content": "can you put down into the location on the matrix dashboard",
+      "timestamp": "2025-07-13T03:12:13.802Z"
+    },
+    {
+      "id": 1752376343647,
+      "type": "assistant",
+      "content": "I notice you have several tasks with unclear descriptions (like \"d\", \"dd\", \"cc\", etc.). Let me help you organize these into proper locations on your Matrix dashboard:\n\n**Current unclear tasks that need better placement:**\n- **Venture**: \"d\" (Future)\n- **Finance**: \"ddd\" (Week), \"dd\" (Quarter), \"cc\" (Future)\n- **Personal**: \"ccd\" (Future)\n\nTo properly place tasks on your Matrix dashboard, I need to know:\n1. What these abbreviated tasks actually represent\n2. Their urgency and importance levels\n\n**Here's how to organize by the Matrix quadrants:**\n\n🔴 **Urgent & Important** (Do First)\n- Currently empty - good job staying ahead!\n\n🟡 **Not Urgent & Important** (Schedule)\n- Review investment portfolio (Month)\n- Plan weekend activities (Week)\n\n🟢 **Urgent & Not Important** (Delegate)\n- Currently empty\n\n⚪ **Not Urgent & Not Important** (Eliminate/Later)\n- Your \"Future\" tasks might belong here\n\n**Action steps:**\n1. Update those abbreviated tasks with clear descriptions\n2. Re-evaluate their priorities based on actual urgency\n3. Consider if any can be delegated or eliminated\n4. Move tasks to appropriate quadrants based on their true importance\n\nWould you like to update these tasks with proper descriptions so I can help you place them correctly?",
+      "timestamp": "2025-07-13T03:12:23.646Z"
+    },
+    {
+      "id": 1752376394823,
+      "type": "user",
+      "content": "ignore what's on the board currently",
+      "timestamp": "2025-07-13T03:13:14.823Z"
+    },
+    {
+      "id": 1752376402134,
+      "type": "assistant",
+      "content": "Got it! Let's start fresh. \n\nSince you want to ignore the current board, I'm ready to help you build a new task list from scratch. What's on your mind right now?\n\nHere are some ways we can get started:\n\n**Quick Start Options:**\n- **Brain dump**: Tell me everything that's weighing on your mind\n- **Top 3**: What are the 3 most important things you need to focus on?\n- **Time-based**: What needs to happen this week vs. this month?\n- **Life areas**: Want to organize by work, personal, health, learning, etc.?\n\nOr just start typing whatever feels most natural - I'll help you organize it into actionable tasks and priorities.\n\nWhat would you like to tackle first?",
+      "timestamp": "2025-07-13T03:13:22.133Z"
+    },
+    {
+      "id": 1752376423285,
+      "type": "user",
+      "content": "clean up the board",
+      "timestamp": "2025-07-13T03:13:43.285Z"
+    },
+    {
+      "id": 1752376432040,
+      "type": "assistant",
+      "content": "I notice your board has several test tasks (like \"d\", \"dd\", \"ddd\", \"cc\", \"ccd\") that look like placeholders. Let me help you clean up and organize:\n\n**Tasks to Remove:**\n- Finance: \"ddd\", \"dd\", \"cc\" \n- Venture: \"d\"\n- Personal: \"ccd\"\n\n**Tasks to Keep & Focus On:**\n1. **Review investment portfolio** (Finance - Month priority)\n2. **Plan weekend activities** (Personal - Week priority)\n\n**Your Idea:**\n- \"Create a productivity app\" - This could become an actionable venture task!\n\n**Suggested Actions:**\n1. Delete the test tasks to declutter your board\n2. Convert your productivity app idea into concrete tasks:\n   - Research existing productivity apps (Week)\n   - Define MVP features (Week)\n   - Create wireframes (Month)\n3. Add any real tasks you've been putting off\n\nWould you like me to help break down any of your remaining tasks into subtasks, or shall we start fresh with new priorities for the week?",
+      "timestamp": "2025-07-13T03:13:52.039Z"
+    }
+  ],
+  "lastSaved": "2025-07-13T05:19:21.343Z"
 }
