@@ -243,6 +243,24 @@ const MatrixTodoDashboard = () => {
     }));
   };
 
+  const deleteSubtask = (category, taskId, subtaskId) => {
+    setTodos(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        items: prev[category].items.map(item => {
+          if (item.id === taskId && item.subtasks) {
+            return {
+              ...item,
+              subtasks: item.subtasks.filter(subtask => subtask.id !== subtaskId)
+            };
+          }
+          return item;
+        })
+      }
+    }));
+  };
+
   const deleteTask = (category, taskId) => {
     setTodos(prev => ({
       ...prev,
@@ -456,17 +474,29 @@ const MatrixTodoDashboard = () => {
                     </span>
                   )}
                                       {editingSubtask !== subtask.id && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const statuses = ['green', 'yellow', 'red'];
-                          const currentIndex = statuses.indexOf(subtask.status || 'green');
-                          const nextStatus = statuses[(currentIndex + 1) % statuses.length];
-                          updateSubtask(category, item.id, subtask.id, subtask.completed, nextStatus);
-                        }}
-                        className={`w-2 h-2 rounded-full transition-colors flex-shrink-0 ${subtask.status === 'red' ? 'bg-red-500 hover:bg-red-600' : subtask.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
-                        title={subtask.status === 'red' ? 'Blocked' : subtask.status === 'yellow' ? 'Waiting' : 'For me to do'}
-                      />
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const statuses = ['green', 'yellow', 'red'];
+                            const currentIndex = statuses.indexOf(subtask.status || 'green');
+                            const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+                            updateSubtask(category, item.id, subtask.id, subtask.completed, nextStatus);
+                          }}
+                          className={`w-2 h-2 rounded-full transition-colors flex-shrink-0 ${subtask.status === 'red' ? 'bg-red-500 hover:bg-red-600' : subtask.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
+                          title={subtask.status === 'red' ? 'Blocked' : subtask.status === 'yellow' ? 'Waiting' : 'For me to do'}
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteSubtask(category, item.id, subtask.id);
+                          }}
+                          className="text-red-400 hover:text-red-600 flex-shrink-0"
+                          title="Delete subtask"
+                        >
+                          <X className="w-2 h-2" />
+                        </button>
+                      </>
                     )}
                   </li>
                 ))}
