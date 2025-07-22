@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import fs from 'fs/promises';
+import { createClient } from '@supabase/supabase-js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,16 +22,61 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Data file path
-const DATA_FILE_PATH = join(__dirname, 'dashboard-data.json');
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
-// Helper functions for file operations
+// Helper functions for Supabase operations
 const loadData = async () => {
   try {
-    const data = await fs.readFile(DATA_FILE_PATH, 'utf8');
-    return JSON.parse(data);
+    const { data, error } = await supabase
+      .from('dashboard_data')
+      .select('*')
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+      console.error('Error loading data from Supabase:', error);
+      throw error;
+    }
+
+    if (data) {
+      console.log('Data loaded from Supabase successfully');
+      return data.data; // The actual dashboard data is stored in the 'data' column
+    } else {
+      console.log('No existing data found in Supabase, using default data');
+      return {
+        todos: {
+          venture: {
+            icon: "💼",
+            color: "bg-blue-600",
+            items: []
+          },
+          finance: {
+            icon: "💰",
+            color: "bg-green-600",
+            items: []
+          },
+          personal: {
+            icon: "👤",
+            color: "bg-purple-600",
+            items: []
+          }
+        },
+        ideas: [],
+        categoryLinks: {
+          venture: [],
+          finance: [],
+          personal: []
+        },
+        chatMessages: [],
+        lastSaved: null
+      };
+    }
   } catch (error) {
-    console.log('No existing data file found, using default data');
+    console.error('Error loading data from Supabase:', error);
+    // Fallback to default data
     return {
       todos: {
         venture: {
@@ -65,11 +110,24 @@ const loadData = async () => {
 const saveData = async (data) => {
   try {
     data.lastSaved = new Date().toISOString();
-    await fs.writeFile(DATA_FILE_PATH, JSON.stringify(data, null, 2));
-    console.log('Data saved successfully');
+    
+    const { error } = await supabase
+      .from('dashboard_data')
+      .upsert({
+        id: 1, // Single row for dashboard data
+        data: data,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) {
+      console.error('Error saving data to Supabase:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log('Data saved to Supabase successfully');
     return { success: true };
   } catch (error) {
-    console.error('Error saving data:', error);
+    console.error('Error saving data to Supabase:', error);
     return { success: false, error: error.message };
   }
 };

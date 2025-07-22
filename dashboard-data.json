@@ -6,25 +6,40 @@
       "items": [
         {
           "id": 1,
-          "task": "PortCo Mgt Dev",
-          "priority": "week",
-          "completed": false,
-          "status": "green",
+          "task": "PortCo Mgt Email Out",
+          "priority": "completed",
+          "completed": true,
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752377191968.582,
               "text": "set up automated forwarding",
-              "completed": false
+              "completed": true,
+              "status": "grey"
             },
             {
               "id": 1752377201574.4946,
               "text": "send out founder emails",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             },
             {
               "id": 1752377222388.5361,
               "text": "compare empty emails",
-              "completed": false
+              "completed": true,
+              "status": "grey"
+            },
+            {
+              "id": 1752411312101.5808,
+              "text": "financial toolkit for founders attachment",
+              "completed": true,
+              "status": "grey"
+            },
+            {
+              "id": 1752541693128.0884,
+              "text": "check with scot",
+              "completed": true,
+              "status": "green"
             }
           ]
         },
@@ -33,56 +48,61 @@
           "task": "Nvidia Partnership Program",
           "priority": "month",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752377270606.025,
               "text": "replied to all the founders",
-              "completed": true
+              "completed": true,
+              "status": "grey"
             },
             {
               "id": 1752377290811.8499,
-              "text": "reach out to VC alliance email",
+              "text": "reach out to nvidia VC alliance email",
               "completed": false,
-              "status": "yellow"
+              "status": "grey"
             },
             {
-              "id": 1752380944543.8247,
-              "text": "update scot on this",
-              "completed": false
+              "id": 1752543985538.672,
+              "text": "ask scot about nvidia",
+              "completed": true,
+              "status": "green"
             }
           ]
         },
         {
           "id": 3,
           "task": "Deal sourcing on the battery company",
-          "priority": "week",
+          "priority": "quarter",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752377517387.1694,
               "text": "reach out to founder for conversation",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             }
           ]
         },
         {
           "id": 4,
-          "task": "Found my own AI powered VC firm",
+          "task": "Found my own AI powered VC firm & Company",
           "priority": "future",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752377596632.399,
               "text": "Firm - VC firm non-tech in & out",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             },
             {
               "id": 1752377619538.2021,
               "text": "Company - AI platform for VC firm",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             }
           ]
         },
@@ -91,17 +111,19 @@
           "task": "LP fundraising Identify opportunities to contribute to I-40",
           "priority": "quarter",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752377787473.9993,
               "text": "Pitch deck for tweener fund: index strategy + follow on, s&p500 benchmark",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             },
             {
               "id": 1752377799175.439,
               "text": "LP identification",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             }
           ]
         },
@@ -110,31 +132,16 @@
           "task": "Hyperscaler Partnership",
           "priority": "quarter",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752378876497.1492,
-              "text": "google",
-              "completed": false
-            },
-            {
-              "id": 1752378881037.04,
-              "text": "aws",
-              "completed": false
-            },
-            {
-              "id": 1752378890040.2869,
-              "text": "coreweave",
-              "completed": false
-            },
-            {
-              "id": 1752378895663.7605,
-              "text": "microsoft",
+              "text": "google,aws,msft,coreweave",
               "completed": false
             },
             {
               "id": 1752383268968.7175,
-              "text": "",
+              "text": "openai, anthropic, perplexity",
               "completed": false
             }
           ]
@@ -144,46 +151,58 @@
           "task": "CTO forum",
           "priority": "quarter",
           "completed": false,
-          "status": "green"
+          "status": "grey",
+          "subtasks": []
         },
         {
           "id": 8,
           "task": "Competitive analysis",
-          "priority": "week",
+          "priority": "quarter",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752378959820.7993,
               "text": "serfa",
-              "completed": false
+              "completed": true,
+              "status": "grey"
             },
             {
               "id": 1752378967058.8245,
               "text": "weraise",
-              "completed": false
+              "completed": true,
+              "status": "grey"
             },
             {
               "id": 1752379410210.3472,
               "text": "pitchbook carta",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             },
             {
               "id": 1752379594357.2153,
               "text": "vela",
-              "completed": false
+              "completed": false,
+              "status": "grey"
             },
             {
               "id": 1752379673736.5222,
               "text": "forge",
-              "completed": false
+              "completed": false,
+              "status": "grey"
+            },
+            {
+              "id": 1753143979508.71,
+              "text": "alex",
+              "completed": false,
+              "status": "grey"
             }
           ]
         },
         {
           "id": 9,
           "task": "Extended customers",
-          "priority": "month",
+          "priority": "quarter",
           "completed": false,
           "status": "green",
           "subtasks": [
@@ -212,7 +231,7 @@
         {
           "id": 10,
           "task": "Extended scope",
-          "priority": "month",
+          "priority": "quarter",
           "completed": false,
           "status": "green",
           "subtasks": [
@@ -274,12 +293,13 @@
           "task": "Learn",
           "priority": "week",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752380883162.1826,
-              "text": "ask scot about safe from two companies",
-              "completed": false
+              "text": "ask scot about SAFE from two companies",
+              "completed": false,
+              "status": "green"
             },
             {
               "id": 1752380896936.893,
@@ -287,6 +307,71 @@
               "completed": false
             }
           ]
+        },
+        {
+          "id": 31,
+          "task": "Anthropic VC program",
+          "priority": "month",
+          "completed": false,
+          "status": "grey",
+          "subtasks": [
+            {
+              "id": 1752517079697.9617,
+              "text": "sechedule a time 15 intro",
+              "completed": true,
+              "status": "grey"
+            },
+            {
+              "id": 1752523802781.2102,
+              "text": "meeting with Swanee on July 30 11am",
+              "completed": false,
+              "status": "grey"
+            },
+            {
+              "id": 1752523819363.669,
+              "text": "prep elevator pitch to anthropic",
+              "completed": false,
+              "status": "grey"
+            },
+            {
+              "id": 1753143832403.7332,
+              "text": "Claude finance institute sale",
+              "completed": false,
+              "status": "grey"
+            }
+          ]
+        },
+        {
+          "id": 35,
+          "task": "Email Scot about regional expansion",
+          "priority": "month",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 37,
+          "task": "Software development lifecycle",
+          "priority": "week",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 39,
+          "task": "deal sourcing scout program - chris tomorrow",
+          "priority": "week",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 40,
+          "task": "try out gpt codex, manus, perplexity, claude, gemini, etc",
+          "priority": "week",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
         }
       ]
     },
@@ -317,28 +402,41 @@
         },
         {
           "id": 16,
-          "task": "NC/CA Unemployment application check",
-          "priority": "week",
-          "completed": false,
-          "status": "green"
+          "task": "NC/CA UE application check",
+          "priority": "completed",
+          "completed": true,
+          "status": "green",
+          "subtasks": [
+            {
+              "id": 1752510929773.9036,
+              "text": "check NC unemployment status",
+              "completed": true
+            },
+            {
+              "id": 1752510938231.9177,
+              "text": "apply to CA UE",
+              "completed": true
+            }
+          ]
         },
         {
           "id": 17,
           "task": "Ramp business card",
           "priority": "month",
           "completed": false,
-          "status": "green"
+          "status": "grey",
+          "subtasks": []
         },
         {
           "id": 18,
           "task": "Self directed IRA for Kurtis & Me",
-          "priority": "week",
+          "priority": "month",
           "completed": false,
-          "status": "green",
+          "status": "grey",
           "subtasks": [
             {
               "id": 1752383937186.087,
-              "text": "call fidelity wrt self directed IRA",
+              "text": "call fidelity wrt self directed IRA vs self IRA",
               "completed": false
             }
           ]
@@ -348,21 +446,24 @@
           "task": "Trim Meta and Google",
           "priority": "month",
           "completed": false,
-          "status": "green"
+          "status": "grey",
+          "subtasks": []
         },
         {
           "id": 20,
           "task": "Business expense better tracking",
           "priority": "quarter",
           "completed": false,
-          "status": "green"
+          "status": "grey",
+          "subtasks": []
         },
         {
           "id": 25,
           "task": "Move money to SGOV",
-          "priority": "week",
+          "priority": "month",
           "completed": false,
-          "status": "green"
+          "status": "grey",
+          "subtasks": []
         },
         {
           "id": 26,
@@ -377,6 +478,45 @@
           "priority": "future",
           "completed": false,
           "status": "green"
+        },
+        {
+          "id": 30,
+          "task": "Bank account password clean up",
+          "priority": "month",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 32,
+          "task": "CA UE status check by July 30",
+          "priority": "waiting_actioned",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 33,
+          "task": "@ Robinhood or other high yield savings",
+          "priority": "month",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
+        },
+        {
+          "id": 38,
+          "task": "Personal Investment",
+          "priority": "week",
+          "completed": false,
+          "status": "grey",
+          "subtasks": [
+            {
+              "id": 1753143903481.242,
+              "text": "perplexity",
+              "completed": false,
+              "status": "grey"
+            }
+          ]
         }
       ]
     },
@@ -404,11 +544,56 @@
           "priority": "quarter",
           "completed": false,
           "status": "green"
+        },
+        {
+          "id": 28,
+          "task": "Productivity tool dev",
+          "priority": "month",
+          "completed": false,
+          "status": "green"
+        },
+        {
+          "id": 34,
+          "task": "Flight to Michigan",
+          "priority": "week",
+          "completed": false,
+          "status": "grey",
+          "subtasks": []
         }
       ]
     }
   },
   "ideas": [
+    {
+      "id": 1752541608175,
+      "text": "be able to group sticky notes based on category",
+      "timestamp": "2025-07-15T01:06:48.175Z"
+    },
+    {
+      "id": 1752541579381,
+      "text": "https://x.com/rohanpaul_ai/status/1944266301775786253?s=46&t=JZu5C8rgfqqmMSU5bRrTpg",
+      "timestamp": "2025-07-15T01:06:19.381Z"
+    },
+    {
+      "id": 1752538617648,
+      "text": "Different investor style - Peter Lynch, Warren BUffet,, other famous investors",
+      "timestamp": "2025-07-15T00:16:57.648Z"
+    },
+    {
+      "id": 1752511087773,
+      "text": "https://quadd.bio/",
+      "timestamp": "2025-07-14T16:38:07.773Z"
+    },
+    {
+      "id": 1752412027800,
+      "text": "https://www.runfutureproof.com/categories/finance",
+      "timestamp": "2025-07-13T13:07:07.800Z"
+    },
+    {
+      "id": 1752411449940,
+      "text": "https://www.composer.trade/blog/can-ai-beat-the-sp500",
+      "timestamp": "2025-07-13T12:57:29.940Z"
+    },
     {
       "id": 1752381552070,
       "text": "Jordan Lake Farm Thurs & Sat",
@@ -428,16 +613,16 @@
   "categoryLinks": {
     "venture": [
       {
-        "id": 1,
-        "title": "Portfolio Strategy",
-        "url": "https://docs.google.com/spreadsheets/d/example",
-        "type": "sheets"
+        "id": 1752541740570,
+        "title": "email contact",
+        "url": "https://docs.google.com/spreadsheets/d/1IcIEJ1eOFvRCF8p8AEpnulSEYTaDroMQOQBKL9ucv9M/edit?gid=609177474#gid=609177474",
+        "type": "docs"
       },
       {
-        "id": 2,
-        "title": "Investment Thesis",
-        "url": "https://docs.google.com/presentation/d/example",
-        "type": "slides"
+        "id": 1752543061814,
+        "title": "draft to founders",
+        "url": "https://docs.google.com/document/d/1zP2nxfAHO-QQBpM43cYgb70LO10QqN_CSuNYWZYsPwk/edit?usp=sharing",
+        "type": "docs"
       }
     ],
     "finance": [
@@ -507,5 +692,5 @@
       "timestamp": "2025-07-13T03:13:52.039Z"
     }
   ],
-  "lastSaved": "2025-07-13T05:19:21.343Z"
+  "lastSaved": "2025-07-22T17:38:42.775Z"
 }
