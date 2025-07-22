@@ -59,18 +59,26 @@ const MatrixTodoDashboard = () => {
     const loadData = async () => {
       try {
         const response = await fetch('/api/data');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.todos) setTodos(data.todos);
-          if (data.ideas) setIdeas(data.ideas);
-          if (data.categoryLinks) setCategoryLinks(data.categoryLinks);
-          if (data.chatMessages) setChatMessages(data.chatMessages);
+        if (!response.ok) {
+          throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Validate data structure before setting state
+        if (data && typeof data === 'object') {
+          if (data.todos && typeof data.todos === 'object') setTodos(data.todos);
+          if (Array.isArray(data.ideas)) setIdeas(data.ideas);
+          if (data.categoryLinks && typeof data.categoryLinks === 'object') setCategoryLinks(data.categoryLinks);
+          if (Array.isArray(data.chatMessages)) setChatMessages(data.chatMessages);
           console.log('Data loaded successfully');
         } else {
-          console.error('Failed to load data');
+          console.warn('Invalid data structure received from API');
         }
       } catch (error) {
         console.error('Error loading data:', error);
+        // Show user-friendly error message or set default state
+        // Could add toast notification here
       }
     };
 
@@ -95,8 +103,12 @@ const MatrixTodoDashboard = () => {
         body: JSON.stringify(dataToSave),
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (!response.ok) {
+        throw new Error(`Failed to save data: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      if (result.success) {
         console.log('Data saved successfully:', result.lastSaved);
       } else {
         console.error('Failed to save data');
