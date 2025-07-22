@@ -59,18 +59,26 @@ const MatrixTodoDashboard = () => {
     const loadData = async () => {
       try {
         const response = await fetch('/api/data');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.todos) setTodos(data.todos);
-          if (data.ideas) setIdeas(data.ideas);
-          if (data.categoryLinks) setCategoryLinks(data.categoryLinks);
-          if (data.chatMessages) setChatMessages(data.chatMessages);
+        if (!response.ok) {
+          throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // Validate data structure before setting state
+        if (data && typeof data === 'object') {
+          if (data.todos && typeof data.todos === 'object') setTodos(data.todos);
+          if (Array.isArray(data.ideas)) setIdeas(data.ideas);
+          if (data.categoryLinks && typeof data.categoryLinks === 'object') setCategoryLinks(data.categoryLinks);
+          if (Array.isArray(data.chatMessages)) setChatMessages(data.chatMessages);
           console.log('Data loaded successfully');
         } else {
-          console.error('Failed to load data');
+          console.warn('Invalid data structure received from API');
         }
       } catch (error) {
         console.error('Error loading data:', error);
+        // Show user-friendly error message or set default state
+        // Could add toast notification here
       }
     };
 
@@ -95,8 +103,12 @@ const MatrixTodoDashboard = () => {
         body: JSON.stringify(dataToSave),
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (!response.ok) {
+        throw new Error(`Failed to save data: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      if (result.success) {
         console.log('Data saved successfully:', result.lastSaved);
       } else {
         console.error('Failed to save data');
@@ -111,50 +123,50 @@ const MatrixTodoDashboard = () => {
       icon: <Briefcase className="w-5 h-5" />,
       color: 'bg-blue-600',
       items: [
-        { id: 1, task: 'Portfolio management tool development', priority: 'week', completed: false, status: 'green', 
+        { id: 1, task: 'Portfolio management tool development', priority: 'week', completed: false, status: 'grey', 
           subtasks: [
-            { id: 101, text: 'Letter to founders', completed: false, status: 'green' },
-            { id: 102, text: 'Competitive landscape analysis', completed: false, status: 'yellow' }
+            { id: 101, text: 'Letter to founders', completed: false, status: 'grey' },
+            { id: 102, text: 'Competitive landscape analysis', completed: false, status: 'grey' }
           ]
         },
-        { id: 2, task: 'Nvidia partnership management', priority: 'week', completed: false },
-        { id: 3, task: 'Deal sourcing', priority: 'week', completed: false, 
+        { id: 2, task: 'Nvidia partnership management', priority: 'week', completed: false, status: 'grey', subtasks: [] },
+        { id: 3, task: 'Deal sourcing', priority: 'week', completed: false, status: 'grey', 
           subtasks: [
-            { id: 103, text: 'Harmonic report sharing', completed: false }
+            { id: 103, text: 'Harmonic report sharing', completed: false, status: 'grey' }
           ]
         },
-        { id: 4, task: 'Build AI tools for VC firms (Your Company)', priority: 'month', completed: false },
-        { id: 5, task: 'Establish your own VC firm', priority: 'future', completed: false },
-        { id: 6, task: 'Fundraising pitch practice', priority: 'month', completed: false },
-        { id: 7, task: 'Regional expansion research', priority: 'quarter', completed: false },
-        { id: 8, task: 'Hyperscaler partnerships', priority: 'quarter', completed: false },
-        { id: 9, task: 'Connect with later-stage VCs', priority: 'quarter', completed: false },
-        { id: 10, task: 'I-40 capital understanding', priority: 'quarter', completed: false },
-        { id: 18, task: 'Build a billion-dollar portfolio company', priority: 'future', completed: false },
-        { id: 19, task: 'Launch international VC fund', priority: 'future', completed: false }
+        { id: 4, task: 'Build AI tools for VC firms (Your Company)', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 5, task: 'Establish your own VC firm', priority: 'future', completed: false, status: 'grey', subtasks: [] },
+        { id: 6, task: 'Fundraising pitch practice', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 7, task: 'Regional expansion research', priority: 'quarter', completed: false, status: 'grey', subtasks: [] },
+        { id: 8, task: 'Hyperscaler partnerships', priority: 'quarter', completed: false, status: 'grey', subtasks: [] },
+        { id: 9, task: 'Connect with later-stage VCs', priority: 'quarter', completed: false, status: 'grey', subtasks: [] },
+        { id: 10, task: 'I-40 capital understanding', priority: 'quarter', completed: false, status: 'grey', subtasks: [] },
+        { id: 18, task: 'Build a billion-dollar portfolio company', priority: 'future', completed: false, status: 'grey', subtasks: [] },
+        { id: 19, task: 'Launch international VC fund', priority: 'future', completed: false, status: 'grey', subtasks: [] }
       ]
     },
     finance: {
       icon: <DollarSign className="w-5 h-5" />,
       color: 'bg-green-600',
       items: [
-        { id: 11, task: 'Ramp demo for expense management', priority: 'week', completed: false },
-        { id: 12, task: 'Trim concentrated stock positions', priority: 'month', completed: false },
-        { id: 13, task: 'Tax strategy planning', priority: 'month', completed: false },
-        { id: 14, task: 'Business expense organization', priority: 'month', completed: false },
-        { id: 15, task: 'Research new investment opportunities', priority: 'quarter', completed: false },
-        { id: 20, task: 'Achieve financial independence', priority: 'future', completed: false },
-        { id: 21, task: 'Build generational wealth portfolio', priority: 'future', completed: false }
+        { id: 11, task: 'Ramp demo for expense management', priority: 'week', completed: false, status: 'grey', subtasks: [] },
+        { id: 12, task: 'Trim concentrated stock positions', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 13, task: 'Tax strategy planning', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 14, task: 'Business expense organization', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 15, task: 'Research new investment opportunities', priority: 'quarter', completed: false, status: 'grey', subtasks: [] },
+        { id: 20, task: 'Achieve financial independence', priority: 'future', completed: false, status: 'grey', subtasks: [] },
+        { id: 21, task: 'Build generational wealth portfolio', priority: 'future', completed: false, status: 'grey', subtasks: [] }
       ]
     },
     personal: {
       icon: <User className="w-5 h-5" />,
       color: 'bg-purple-600',
       items: [
-        { id: 16, task: 'China visa application', priority: 'week', completed: false },
-        { id: 17, task: 'Establish health & wellness routine', priority: 'month', completed: false },
-        { id: 22, task: 'Learn Mandarin fluently', priority: 'future', completed: false },
-        { id: 23, task: 'Achieve work-life balance mastery', priority: 'future', completed: false }
+        { id: 16, task: 'China visa application', priority: 'week', completed: false, status: 'grey', subtasks: [] },
+        { id: 17, task: 'Establish health & wellness routine', priority: 'month', completed: false, status: 'grey', subtasks: [] },
+        { id: 22, task: 'Learn Mandarin fluently', priority: 'future', completed: false, status: 'grey', subtasks: [] },
+        { id: 23, task: 'Achieve work-life balance mastery', priority: 'future', completed: false, status: 'grey', subtasks: [] }
       ]
     }
   });
@@ -168,12 +180,13 @@ const MatrixTodoDashboard = () => {
     return () => clearTimeout(timeoutId);
   }, [todos, ideas, categoryLinks, chatMessages]);
 
-  const priorities = ['week', 'month', 'quarter', 'future', 'completed'];
+  const priorities = ['week', 'month', 'quarter', 'future', 'waiting_actioned', 'completed'];
   const priorityLabels = {
     week: 'This Week',
     month: 'This Month',
     quarter: 'This Quarter',
     future: 'Future',
+    waiting_actioned: 'Waiting',
     completed: 'Completed'
   };
   const priorityColors = {
@@ -181,6 +194,7 @@ const MatrixTodoDashboard = () => {
     month: 'bg-yellow-50 border-yellow-200',
     quarter: 'bg-blue-50 border-blue-200',
     future: 'bg-purple-50 border-purple-200',
+    waiting_actioned: 'bg-gray-50 border-gray-200',
     completed: 'bg-green-50 border-green-200'
   };
 
@@ -190,7 +204,12 @@ const MatrixTodoDashboard = () => {
       [category]: {
         ...prev[category],
         items: prev[category].items.map(item =>
-          item.id === taskId ? { ...item, ...updates } : item
+          item.id === taskId ? {
+            ...item,
+            ...updates,
+            subtasks: updates.subtasks !== undefined ? updates.subtasks : (item.subtasks !== undefined ? item.subtasks : []),
+            status: updates.status !== undefined ? updates.status : (item.status || 'green')
+          } : item
         )
       }
     }));
@@ -418,13 +437,13 @@ const MatrixTodoDashboard = () => {
           {editingTask !== item.id && (
             <button
               onClick={() => {
-                const statuses = ['green', 'yellow', 'red'];
+                const statuses = ['green', 'yellow', 'red', 'grey'];
                 const currentIndex = statuses.indexOf(item.status || 'green');
                 const nextStatus = statuses[(currentIndex + 1) % statuses.length];
                 updateTask(category, item.id, { status: nextStatus });
               }}
-              className={`w-3 h-3 rounded-full transition-colors flex-shrink-0 ${item.status === 'red' ? 'bg-red-500 hover:bg-red-600' : item.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
-              title={item.status === 'red' ? 'Blocked' : item.status === 'yellow' ? 'Waiting' : 'For me to do'}
+              className={`w-3 h-3 rounded-full transition-colors flex-shrink-0 ${item.status === 'red' ? 'bg-red-500 hover:bg-red-600' : item.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : item.status === 'grey' ? 'bg-gray-400 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}`} 
+              title={item.status === 'red' ? 'Blocked' : item.status === 'yellow' ? 'Waiting' : item.status === 'grey' ? 'On hold' : 'For me to do'}
             />
           )}
         </div>
@@ -478,13 +497,13 @@ const MatrixTodoDashboard = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const statuses = ['green', 'yellow', 'red'];
+                            const statuses = ['green', 'yellow', 'red', 'grey'];
                             const currentIndex = statuses.indexOf(subtask.status || 'green');
                             const nextStatus = statuses[(currentIndex + 1) % statuses.length];
                             updateSubtask(category, item.id, subtask.id, subtask.completed, nextStatus);
                           }}
-                          className={`w-2 h-2 rounded-full transition-colors flex-shrink-0 ${subtask.status === 'red' ? 'bg-red-500 hover:bg-red-600' : subtask.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600'}`} 
-                          title={subtask.status === 'red' ? 'Blocked' : subtask.status === 'yellow' ? 'Waiting' : 'For me to do'}
+                          className={`w-2 h-2 rounded-full transition-colors flex-shrink-0 ${subtask.status === 'red' ? 'bg-red-500 hover:bg-red-600' : subtask.status === 'yellow' ? 'bg-yellow-500 hover:bg-yellow-600' : subtask.status === 'grey' ? 'bg-gray-400 hover:bg-gray-600' : 'bg-green-500 hover:bg-green-600'}`} 
+                          title={subtask.status === 'red' ? 'Blocked' : subtask.status === 'yellow' ? 'Waiting' : subtask.status === 'grey' ? 'On hold' : 'For me to do'}
                         />
                         <button
                           onClick={(e) => {
@@ -516,7 +535,8 @@ const MatrixTodoDashboard = () => {
                       const newSubtask = {
                         id: Date.now() + Math.random(),
                         text: subtaskText,
-                        completed: false
+                        completed: false,
+                        status: 'grey'
                       };
                       updateTask(category, item.id, {
                         subtasks: [...(item.subtasks || []), newSubtask]
@@ -598,7 +618,8 @@ const MatrixTodoDashboard = () => {
                         .map(line => ({
                           id: Date.now() + Math.random(),
                           text: line.trim().replace(/^[-*•]\s+/, ''),
-                          completed: false
+                          completed: false,
+                          status: 'grey'
                         }));
                       
                       const maxId = Math.max(0, ...Object.values(todos).flatMap(cat => cat.items.map(item => item.id)));
@@ -607,8 +628,8 @@ const MatrixTodoDashboard = () => {
                         task: mainTask,
                         priority: priority,
                         completed: false,
-                        status: 'green',
-                        subtasks: subtasks.length > 0 ? subtasks.map(s => ({ ...s, status: 'green' })) : undefined
+                        status: 'grey',
+                        subtasks: subtasks.length > 0 ? subtasks.map(s => ({ ...s, status: 'grey' })) : []
                       };
                       
                       setTodos(prev => ({
@@ -688,7 +709,7 @@ const MatrixTodoDashboard = () => {
       task: idea.text,
       priority: 'week',
       completed: false,
-      status: 'green'
+      status: 'grey'
     };
     
     setTodos(prev => ({
@@ -989,21 +1010,21 @@ const MatrixTodoDashboard = () => {
             </div>
             
             {/* Priority Headers for this Category */}
-            <div className="grid grid-cols-5">
+            <div className="grid grid-cols-6">
           {priorities.map(priority => (
-            <div key={priority} className={`p-4 text-center font-semibold ${priorityColors[priority]}`}>
-              <div className="text-lg">{priorityLabels[priority]}</div>
-                  <div className={`text-sm ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : priority === 'quarter' ? 'text-blue-600' : priority === 'future' ? 'text-purple-600' : 'text-green-600'}`}>
-                    {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : priority === 'quarter' ? 'Strategic' : priority === 'future' ? 'Long-term' : 'Done'}
+            <div key={priority} className={`p-3 text-center font-semibold ${priorityColors[priority]}`}> 
+              <div className="text-base">{priorityLabels[priority]}</div>
+                  <div className={`text-xs ${priority === 'week' ? 'text-red-600' : priority === 'month' ? 'text-yellow-600' : priority === 'quarter' ? 'text-blue-600' : priority === 'future' ? 'text-purple-600' : priority === 'waiting_actioned' ? 'text-gray-600' : 'text-green-600'}`}> 
+                    {priority === 'week' ? 'Urgent' : priority === 'month' ? 'Important' : priority === 'quarter' ? 'Strategic' : priority === 'future' ? 'Long-term' : priority === 'waiting_actioned' ? 'Actioned' : 'Done'}
               </div>
             </div>
           ))}
         </div>
 
             {/* Matrix Grid */}
-            <div className="grid grid-cols-5">
+            <div className="grid grid-cols-6">
             {priorities.map(priority => (
-              <div key={priority} className="p-2">
+              <div key={priority} className="p-1">
                 <MatrixCell category={category} priority={priority} />
               </div>
             ))}
